@@ -1,0 +1,1 @@
+py C:\Users\capricron\Documents\GitHub\Tubes_Alpro_Secret_Room_Security\main.py
