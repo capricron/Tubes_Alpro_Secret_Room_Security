@@ -3,11 +3,11 @@ import cv2
 import pickle
 import time
 from database import mycursor,mydb
-
+from iot import openGate
 from datetime import datetime
 import pytz
 
-def simpanDatabase(keterangan, nama):
+def simpanDatabase(id,username,keterangan, nama):
     sekarang = datetime.now(pytz.timezone('Asia/Jakarta'))
     tanggal = sekarang.strftime("%d-%m-%Y")
     jam = sekarang.strftime("%H:%M:%S")
@@ -17,8 +17,8 @@ def simpanDatabase(keterangan, nama):
         mycursor.execute(sql)
         mydb.commit()
     
-    sql = "INSERT INTO riwayat (nama, jam, tanggal, keterangan) VALUES (%s, %s ,%s, %s)"
-    val = (nama, jam, tanggal, keterangan)
+    sql = "INSERT INTO riwayat (id,username, nama, jam, tanggal, keterangan) VALUES (%s, %s,%s, %s ,%s, %s)"
+    val = (id, username, nama, jam, tanggal, keterangan)
     mycursor.execute(sql, val)
     mydb.commit()
 
@@ -38,6 +38,7 @@ def deteksiWajah(bot,message):
     tunggu = 0
     try:
         while tunggu < 10:
+            # cv2.imgs
             ret, frame = cap.read()
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             faces = face_cascade.detectMultiScale(gray, scaleFactor=1.5, minNeighbors=5)
@@ -47,10 +48,11 @@ def deteksiWajah(bot,message):
                 id_, conf = recognizer.predict(roi_gray) 
                 if conf >= 45 and conf <= 85:
                     keterangan = "Berhasil Masuk"
-                    simpanDatabase(keterangan, labels[id_])
-                    bot.send_message(message.chat.id, "Nama: " + labels[id_])
+                    simpanDatabase(message.from_user.id, message.from_user.username,keterangan, labels[id_])
+                    bot.send_message(message.chat.id, "Selamat Datang \n" + labels[id_])
                     cap.release()
                     cv2.destroyAllWindows()
+                    openGate()
 
             time.sleep(0.5)
             tunggu += 1
@@ -59,7 +61,7 @@ def deteksiWajah(bot,message):
             bot.send_message(message.chat.id, "Tidak ada wajah terdeteksi")
             cap.release()
             cv2.destroyAllWindows()
-            simpanDatabase("Tidak ada wajah terdeteksi", "unknown")
+            simpanDatabase(message.from_user.id, message.from_user.username,"Tidak ada wajah terdeteksi", "unknown")
     except:
         pass
 
