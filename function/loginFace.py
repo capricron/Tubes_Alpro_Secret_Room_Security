@@ -52,6 +52,7 @@ def deteksiWajah(bot,message):
                     bot.send_message(message.chat.id, "Selamat Datang \n" + labels[id_])
                     cap.release()
                     cv2.destroyAllWindows()
+                    time.sleep(1)
                     openGate()
 
             time.sleep(0.5)

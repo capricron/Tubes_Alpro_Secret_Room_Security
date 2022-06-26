@@ -9,7 +9,7 @@ red = Pin(12, Pin.OUT)
 buzzer.value(1)
 red.value(1)
 time.sleep(0.5)
-for i in range(360,0,-1):
+for i in range(150,0,-1):
     p.duty(i)
     time.sleep(0.01)
 buzzer.value(0)

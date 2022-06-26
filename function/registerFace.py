@@ -3,7 +3,7 @@ import cv2
 import time
 from facesTrain import faceTrain
 
-def registerFace(args, bot, msg):
+def registerFace(args, password ,bot, msg):
     try:
         if  args[1]  != "rahasia":
             bot.send_message(msg.chat.id, "Password salah")
